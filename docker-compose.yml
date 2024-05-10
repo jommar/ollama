@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    network_mode: host
+    volumes:
+      - open-webui:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://localhost:11434
+      - PORT=8686
+    ports:
+      - "8686:8686"
+    restart: always
+
+  watchtower:
+    image: containrrr/watchtower
+    command: --interval 30 open-webui
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - default
+
+volumes:
+  open-webui:
+
+networks:
+  default:
